@@ -20,7 +20,6 @@ def load_package_json(project_root):
 def collect_dependencies(package_json):
     deps = package_json.get('dependencies', {})
     dev_deps = package_json.get('devDependencies', {})
-    # Return a set of package names
     return set(list(deps.keys()) + list(dev_deps.keys()))
 
 def search_for_package_in_file(package, file_path):
@@ -41,14 +40,12 @@ def main():
     found = {pkg: False for pkg in packages}
 
     for root, dirs, files in os.walk(project_root):
-        # Exclude directories we don't want to search
         if 'node_modules' in dirs:
             dirs.remove('node_modules')
         if 'bin' in dirs:
             dirs.remove('bin')
         for filename in files:
             file_path = os.path.join(root, filename)
-            # For each file, check every package that hasn't been found yet.
             for pkg in list(found.keys()):
                 if not found[pkg] and search_for_package_in_file(pkg, file_path):
                     found[pkg] = True
